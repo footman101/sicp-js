@@ -1,3 +1,5 @@
+import { gcd } from '../utils/index.js';
+
 // 线性的递归和迭代 - 计算过程的递归与迭代，而不是语法形式上
 const factorialRecursion = n => {
   if (n == 1) {
@@ -209,11 +211,6 @@ const fastFib = n => {
 }
 
 console.log(fibRecursion(10), fibIteration(10), 'fastFib', fastFib(10));
-
-const gcd = (a, b) => {
-  if (b === 0) return a;
-  return gcd(b, a % b);
-}
 
 console.log(gcd(206, 40))
 
