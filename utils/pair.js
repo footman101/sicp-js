@@ -18,5 +18,7 @@ export const pair = (x, y) => m => m(x, y);
 // eslint-disable-next-line no-unused-vars
 export const head = pair => pair((x, y) => x);
 export const tail = pair => pair((x, y) => y);
+// TODO： 不严谨
+export const isPair = item => typeof item === 'function' && item.length === 1;
 
 
