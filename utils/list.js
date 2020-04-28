@@ -83,8 +83,13 @@ export function reverse ( items ) {
 }
 
 export function filter(f, items) {
-  if (isEmpty(items)) return items;
-  return f(head(items)) ? pair(head(items), filter(f, tail(items))) : filter(f, tail(items));
+  // if (isEmpty(items)) return items;
+  // return f(head(items)) ? pair(head(items), filter(f, tail(items))) : filter(f, tail(items));
+  const iter = (result, items) => {
+    if (isEmpty(items)) return result;
+    return iter(f(head(items)) ? append(result, list(head(items))) : result, tail(items));
+  };
+  return iter(null, items);
 }
 
 export function map(f, items) {
@@ -114,6 +119,18 @@ export function reduce(f, initial, items) {
   return f(head(items), reduce(f, initial, tail(items)));
 }
 
+export function reduceLeft(f, initial, items) {
+  const iter = (result, items) => {
+    if (isEmpty(items)) {
+      return result;
+    }
+
+    return iter(f(head(items), result), tail(items));
+  };
+
+  return iter(initial, items);
+}
+
 export function enumerateInterval(low, high) {
   if (low > high) {
     return null;
@@ -122,8 +139,12 @@ export function enumerateInterval(low, high) {
   return pair(low, enumerateInterval(low + 1, high));
 }
 
-export function enumerateTree ( tree ) {
+export function enumerateTree(tree) {
   if (isEmpty(tree)) return tree;
   if (!isPair(tree)) return list(tree);
   return append(enumerateTree(head(tree)), enumerateTree(tail(tree)));
+}
+
+export function flatMap(f, items) {
+  return reduceLeft(append, null, map(f, items));
 }

@@ -1,6 +1,7 @@
 // export const pair = (x, y) => [x, y];
 // export const head = pair => pair[0];
 // export const tail = pair => pair[1];
+// export const isPair = item => typeof item === 'object' && item !== null && item.length === 2;
 
 // export const pair = (x, y) => {
 //   const dispatch = m => {
