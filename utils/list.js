@@ -1,8 +1,12 @@
-import { pair, head, tail, isPair } from './pair.js';
+import { pair, head, tail, isPair } from "./pair.js";
 
 export function isEmpty(items) {
   return items === null;
 }
+
+export const first = head;
+export const rest = tail;
+export const isList = (l) => isEmpty(l) || isPair(l);
 
 export function list(...args) {
   return args.reduceRight((ret, item) => pair(item, ret), null);
@@ -16,7 +20,7 @@ export function listRef(items, n) {
   return listRef(tail(items), n - 1);
 }
 
-export function length ( items ) {
+export function length(items) {
   if (items === null) {
     return 0;
   }
@@ -24,7 +28,7 @@ export function length ( items ) {
   return 1 + length(tail(items));
 }
 
-export function append (list1, list2) {
+export function append(list1, list2) {
   if (isEmpty(list1)) {
     return list2;
   }
@@ -32,12 +36,12 @@ export function append (list1, list2) {
   return pair(head(list1), append(tail(list1), list2));
 }
 
-export function printList ( items ) {
-  console.log(toString(items));
+export function printList(items) {
+  console.log(isList(items) ? toString(items) : items);
 }
 
-export function toString ( items ) {
-  const result = ['['];
+export function toString(items) {
+  const result = ["("];
   while (!isEmpty(items)) {
     if (isPair(head(items))) {
       result.push(toString(head(items)));
@@ -46,29 +50,29 @@ export function toString ( items ) {
     }
     items = tail(items);
   }
-  result.push(']')
-  return result.join(' ');
+  result.push(")");
+  return result.join(" ");
 }
 
 // 练习2.17
-export function lastPair ( items ) {
+export function lastPair(items) {
   if (isEmpty(items)) {
     return null;
   }
 
-  const iter = items => {
+  const iter = (items) => {
     if (isEmpty(tail(items))) {
       return items;
     }
 
     return iter(tail(items));
-  }
+  };
 
   return iter(items);
 }
 
 // 练习2.18
-export function reverse ( items ) {
+export function reverse(items) {
   // if (isEmpty(items)) {
   //   return items;
   // }
@@ -77,7 +81,7 @@ export function reverse ( items ) {
   const iter = (items, result) => {
     if (isEmpty(items)) return result;
     return iter(tail(items), pair(head(items), result));
-  }
+  };
 
   return iter(items, null);
 }
@@ -87,7 +91,10 @@ export function filter(f, items) {
   // return f(head(items)) ? pair(head(items), filter(f, tail(items))) : filter(f, tail(items));
   const iter = (result, items) => {
     if (isEmpty(items)) return result;
-    return iter(f(head(items)) ? append(result, list(head(items))) : result, tail(items));
+    return iter(
+      f(head(items)) ? append(result, list(head(items))) : result,
+      tail(items)
+    );
   };
   return iter(null, items);
 }
@@ -99,16 +106,19 @@ export function map(f, items) {
 
 export function mapDeep(f, items) {
   if (isEmpty(items)) return items;
-  return pair(isPair(head(items)) ? mapDeep(f, head(items)) : f(head(items)), mapDeep(f, tail(items)));
+  return pair(
+    isPair(head(items)) ? mapDeep(f, head(items)) : f(head(items)),
+    mapDeep(f, tail(items))
+  );
 }
 
 export function forEach(f, items) {
   if (isEmpty(items)) return;
-  f(head(items))
+  f(head(items));
   return forEach(f, tail(items));
 }
 
-export function flatten ( items ) {
+export function flatten(items) {
   if (isEmpty(items)) return items;
   if (!isPair(items)) return pair(items, null);
   return append(flatten(head(items)), flatten(tail(items)));
