@@ -1,4 +1,4 @@
-import { list, first, rest, isList, isEmpty, printList, listRef} from '../utils/list.js';
+import { list, first, rest, isList, isEmpty, printList, listRef, length, reduce} from '../utils/list.js';
 
 const eq = (a, b) => a === b;
 
@@ -22,27 +22,46 @@ console.log(equal(list('a', 'b', list('a', 'b')), list('a', 'b', list('V', 'b'))
 const isVariable = e => typeof e === 'string' && e.length === 1;
 const sameVariable = (a, b) => isVariable(a) && isVariable(b) && eq(a, b);
 const isNumber = c => typeof c === 'number';
-const makeSum = (a, b) => {
-  if (a === 0) return b;
-  if (b === 0) return a;
-  if (isNumber(a) && isNumber(b)) return a + b;
-  return list('+', a, b)
-};
-const makeProduct = (a, b) => {
-  if (a === 0 || b === 0) return 0;
-  if (a === 1) return b;
-  if (b === 1) return a;
-  if (isNumber(a) && isNumber(b)) return a * b;
-  return list('*', a, b)
-};
 
-const isSum = x => isList(x) && !isEmpty(x) && eq(listRef(x, 0), '+');
-const isProduct = x => isList(x) && !isEmpty(x) && eq(listRef(x, 0), '*');
+const makeSum = (...args) => {
+  const argsList = list(...args);
+  const makeTowSum = (a, b) => {
+    if (a === 0) return b;
+    if (b === 0) return a;
+    if (isNumber(a) && isNumber(b)) return a + b;
+    return list('+', a, b)
+  };
+  return reduce(makeTowSum, 0, argsList);
+};
+const makeProduct = (...args) => {
+  const argsList = list(...args);
+  const makeTwoProduct = (a, b) => {
+    if (a === 0 || b === 0) return 0;
+    if (a === 1) return b;
+    if (b === 1) return a;
+    if (isNumber(a) && isNumber(b)) return a * b;
+    return list('*', a, b)
+  };
+  return reduce(makeTwoProduct, 1, argsList);
+};
+const makeExponentiation = (base, exponent) => {
+  if (exponent === 0) return 1;
+  if (exponent === 1) return base;
+
+  return list('**', base, exponent);
+}
+
+const buildIs = symbol => x => isList(x) && !isEmpty(x) && eq(listRef(x, 0), symbol);
+const isSum = buildIs('+');
+const isProduct = buildIs('*');
+const isExponentiation = buildIs('**');
 
 const addend = s => listRef(s, 1);
 const augend = s => listRef(s, 2);
 const multiplier = s => listRef(s, 1);
 const multiplicand = s => listRef(s, 2);
+const base = s => listRef(s, 1);
+const exponent = s => listRef(s, 2);
 
 const deriv = (exp, variable) => {
   if (isNumber(exp)) return 0;
@@ -56,11 +75,20 @@ const deriv = (exp, variable) => {
       makeProduct(deriv(multiplier(exp), variable), multiplicand(exp))
     );
   }
+  if (isExponentiation(exp)) {
+    return makeProduct(
+      makeProduct(exponent(exp), makeExponentiation(base(exp), exponent(exp) - 1)),
+      deriv(base(exp), variable)
+    );
+  }
   throw new Error('unknown expression type!');
 }
 
 printList(deriv(makeSum('x', 3), 'x'));
 printList(deriv(makeProduct('x', 'y'), 'x'));
 printList(deriv(makeProduct(makeProduct('x', 'y'), makeSum('x', 3)), 'x'));
-
-
+// 练习2.56
+printList(deriv(makeExponentiation('x', 10), 'x'));
+// 练习2.57
+printList(deriv(makeSum(makeExponentiation('x', 2), 'x', 10), 'x'));
+printList(deriv(makeProduct(10, makeExponentiation('x', 2), 'y'), 'x'));
