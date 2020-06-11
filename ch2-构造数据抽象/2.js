@@ -1,7 +1,9 @@
 import { pair, head, tail, isPair } from '../utils/pair.js';
-import { list, isEmpty, listRef, length, append, printList, lastPair, reverse,
+import {
+  list, isEmpty, listRef, length, append, printList, lastPair, reverse,
   filter, map, forEach, flatten, mapDeep, reduce, enumerateInterval, enumerateTree,
-  reduceLeft, flatMap } from '../utils/list.js';
+  reduceLeft, flatMap
+} from '../utils/list.js';
 import { square, add, isEven, isOdd } from '../utils/index.js';
 
 const squares = list(1, 4, 9, 16, 25);

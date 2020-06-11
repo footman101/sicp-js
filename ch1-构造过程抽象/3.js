@@ -107,9 +107,9 @@ console.log(filteredAccumulate(isEven, multi, 1, identity, 1, inc, 5));
 
 // 练习1.34
 const f = g => g(2);
-try{
+try {
   f(f);
-} catch(e) {
+} catch (e) {
   console.log(e);
 }
 
@@ -285,7 +285,7 @@ const iterativeImprove = (goodEnough, improve) => firstGuess => {
 
 const sqrt4 = x => {
   const goodEnough = (next, guess) => Math.abs(guess - next) < 0.001;
-  const improve = guess => (guess + x / guess) / 2; 
+  const improve = guess => (guess + x / guess) / 2;
   return iterativeImprove(goodEnough, improve)(1);
 };
 

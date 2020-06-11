@@ -1,4 +1,5 @@
-import { list, first, rest, isList, isEmpty, printList, listRef, length, reduce} from '../utils/list.js';
+import { list, first, rest, isList, isEmpty, printList, listRef, reduce } from '../utils/list.js';
+import { head, tail, pair } from '../utils/pair.js';
 
 const eq = (a, b) => a === b;
 
@@ -92,3 +93,33 @@ printList(deriv(makeExponentiation('x', 10), 'x'));
 // 练习2.57
 printList(deriv(makeSum(makeExponentiation('x', 2), 'x', 10), 'x'));
 printList(deriv(makeProduct(10, makeExponentiation('x', 2), 'y'), 'x'));
+
+
+// 2.3.3 集合的表示
+const elementOfSet = (x, set) => {
+  if (set === null) return false;
+  if (eq(x, head(set))) return true;
+  return elementOfSet(x, tail(set));
+}
+
+const adjoinSet = (x, set) => {
+  return elementOfSet(x, set) ? set : pair(x, set);
+}
+
+const set1 = list(1, 2, 3, 4)
+printList(adjoinSet(5, set1))
+
+const intersectionSet = (set1, set2) => {
+  if (set1 === null || set2 === null) return null;
+  return elementOfSet(head(set1), set2) ? pair(head(set1), intersectionSet(tail(set1), set2)) : intersectionSet(tail(set1), set2);
+}
+
+printList(intersectionSet(list(1, 2, 3), list(2, 3, 4)))
+
+const unionSet = (set1, set2) => {
+  if (set1 === null) return set2;
+  if (set2 === null) return set1;
+  return elementOfSet(head(set1), set2) ? unionSet(tail(set1), set2) : pair(head(set1), unionSet(tail(set1), set2));
+}
+
+printList(unionSet(list(1, 2, 3), list(2, 3, 4)))
